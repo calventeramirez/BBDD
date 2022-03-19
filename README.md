@@ -1,2 +1,2 @@
 # BBDD
-Este es imBase de Datos con la para Libros y CDs
+Base de Datos con la para Libros y CDs
