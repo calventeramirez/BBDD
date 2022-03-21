@@ -25,7 +25,8 @@ public class VistaLibros extends javax.swing.JFrame {
     public VistaLibros() {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setTitle("Base de Datos V 0.2");
+        this.setTitle("Base de Datos V0.3.1");
+        setIconImage(new ImageIcon(getClass().getResource("/img/iconoapp.png")).getImage());
         //this.setExtendedState(MAXIMIZED_BOTH);
         this.setResizable(false);
         cargarDatosTabla();
@@ -79,17 +80,18 @@ public class VistaLibros extends javax.swing.JFrame {
 
             },
             new String [] {
-                "LibrosID", "Nombre Libro", "Autor", "Sinopsis", "Saga/Colección"
+                "ID", "Nombre Libro", "Autor", "Sinopsis", "Saga/Colección", "ISBN"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
         });
+        TablaLibrosArea.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         TablaLibrosArea.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         TablaLibrosArea.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -208,7 +210,10 @@ public class VistaLibros extends javax.swing.JFrame {
 
         SinopsisText.setBackground(new java.awt.Color(255, 255, 255));
         SinopsisText.setColumns(20);
+        SinopsisText.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        SinopsisText.setLineWrap(true);
         SinopsisText.setRows(5);
+        SinopsisText.setWrapStyleWord(true);
         jScrollPane2.setViewportView(SinopsisText);
 
         ColeccionText.setBackground(new java.awt.Color(255, 255, 255));
@@ -234,8 +239,8 @@ public class VistaLibros extends javax.swing.JFrame {
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
-                .addGap(50, 50, 50)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel11)
@@ -256,14 +261,18 @@ public class VistaLibros extends javax.swing.JFrame {
                             .addComponent(jLabel12)
                             .addComponent(jLabel10)
                             .addComponent(jLabel3))
-                        .addGap(25, 25, 25)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                            .addComponent(AutorText)
-                            .addComponent(NombreLibrotext, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(IDLibro)
-                            .addComponent(ISBNtf))))
-                .addGap(0, 25, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(25, 25, 25)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                                    .addComponent(AutorText)
+                                    .addComponent(NombreLibrotext, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(IDLibro)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(ISBNtf, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(25, 25, 25))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -290,23 +299,23 @@ public class VistaLibros extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(ISBNtf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGap(41, 41, 41)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(ISBNtf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(addButton)
                             .addComponent(EditButton)
                             .addComponent(DeleteButton))
                         .addGap(18, 18, 18)
                         .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addGap(22, 22, 22)))
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(20, 20, 20)))
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jButton2.getAccessibleContext().setAccessibleName("jbInicio");
@@ -342,7 +351,13 @@ public class VistaLibros extends javax.swing.JFrame {
             con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
             st = con.createStatement();
             rs = st.executeQuery("select * from AD.LIBROS");
-            TablaLibrosArea.setModel(DbUtils.resultSetToTableModel(rs));
+            //TablaLibrosArea.setModel(DbUtils.resultSetToTableModel(rs));
+            DefaultTableModel dfm = new DefaultTableModel();
+            TablaLibrosArea.setModel(dfm);
+            dfm.setColumnIdentifiers((new Object[]{"ID", "NOMBRE", "AUTOR", "COLECCION", "ISBN"}));
+            while(rs.next()){
+                dfm.addRow(new Object[]{rs.getInt("ID"), rs.getString("NOMBRE"), rs.getString("AUTOR"), rs.getString("COLECCION"), rs.getString("ISBN")});   
+            }
         }catch(SQLException e){
             e.printStackTrace();
         }
@@ -401,22 +416,37 @@ public class VistaLibros extends javax.swing.JFrame {
         IDLibro.setText(modelo.getValueAt(ind, 0).toString());
         NombreLibrotext.setText(modelo.getValueAt(ind, 1).toString());
         AutorText.setText(modelo.getValueAt(ind, 2).toString());
-        if(modelo.getValueAt(ind, 3).toString().isEmpty()){
+        /*if(modelo.getValueAt(ind, 5).toString().isEmpty()){
             SinopsisText.setText("");
         }else{
-           SinopsisText.setText(modelo.getValueAt(ind, 3).toString());
-        }
+           SinopsisText.setText(modelo.getValueAt(ind, 5).toString());
+        }*/
         
-        if(modelo.getValueAt(ind, 4).toString().isEmpty()){
+        if(modelo.getValueAt(ind, 3).toString().isEmpty()){
             ColeccionText.setText("");
         }else{
-            ColeccionText.setText(modelo.getValueAt(ind, 4).toString());
+            ColeccionText.setText(modelo.getValueAt(ind, 3).toString());
         } 
-        if(modelo.getValueAt(ind, 5).toString().isEmpty()){
+        if(modelo.getValueAt(ind, 4).toString().isEmpty()){
             ISBNtf.setText("");
         }else{
-            ISBNtf.setText(modelo.getValueAt(ind, 5).toString());
+            ISBNtf.setText(modelo.getValueAt(ind, 4).toString());
         }  
+        try{
+             //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
+            con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
+            st = con.createStatement();
+            rs = st.executeQuery("select SINOPSIS from AD.LIBROS");
+            while(rs.next()){
+                if(rs.getString("SINOPSIS").isEmpty()){
+                    SinopsisText.setText("");
+                }else{
+                    SinopsisText.setText(rs.getString("SINOPSIS"));
+                }
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_TablaLibrosAreaMouseClicked
 
     private void EditButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditButtonMouseClicked
@@ -437,7 +467,7 @@ public class VistaLibros extends javax.swing.JFrame {
                 if(!ISBNtf.getText().isEmpty()){
                     updateQuery += ",ISBN='"+ISBNtf.getText()+"'";
                 }
-                updateQuery += " where LIBROSID="+IDLibro.getText();
+                updateQuery += " where ID="+IDLibro.getText();
                 Statement add = con.createStatement();
                 add.executeUpdate(updateQuery);
                 JOptionPane.showMessageDialog(this, "Actualización del libro ha sido llevada a cabo.");
