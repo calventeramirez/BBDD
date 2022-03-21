@@ -26,7 +26,7 @@ public class VistaCDs extends javax.swing.JFrame {
     public VistaCDs() {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setTitle("Base de Datos V 0.0.1");
+        this.setTitle("Base de Datos V 0.2");
         //this.setExtendedState(MAXIMIZED_BOTH);
         this.setResizable(false);
         cargarDatosTabla();
@@ -38,6 +38,7 @@ public class VistaCDs extends javax.swing.JFrame {
     public void cargarDatosTabla(){
         //cargar los datos de la BBDD a la tabla con el jar rs2xml.jar
         try{
+            //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
             con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
             st = con.createStatement();
             rs = st.executeQuery("select * from AD.CDS");
@@ -208,7 +209,8 @@ public class VistaCDs extends javax.swing.JFrame {
 
         jLabel10.setText("Número de CDs");
 
-        NumCdsbox.setForeground(new java.awt.Color(255, 255, 255));
+        NumCdsbox.setBackground(new java.awt.Color(255, 255, 255));
+        NumCdsbox.setForeground(new java.awt.Color(0, 0, 0));
         NumCdsbox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}));
         NumCdsbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -326,6 +328,7 @@ public class VistaCDs extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Introduzca el ID del libro que desea añadir.");
         }else{
             try{
+                //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
                 con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
                 PreparedStatement add = con.prepareStatement("insert into CDS values(?,?,?,?)");
                
@@ -362,6 +365,7 @@ public class VistaCDs extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Introduzca el ID del CD, el nombre de este y el cantante que desea editar.");
         }else{
             try{
+                //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
                 con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
                 String updateQuery = "update AD.CDS set NOMBRE='"+NombreCDText.getText()+"',CANTANTE='"+CantanteText.getText()+"',NUMCDS="+NumCdsbox.getSelectedItem(); 
                 updateQuery += " where CDID="+CDjb.getText();
@@ -382,6 +386,7 @@ public class VistaCDs extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Introduzca el ID del CD que desea borrar.");
         }else{
             try{
+                //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
                 con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
                 String id = CDjb.getText();
                 String Query = "delete from AD.CDS where CDID="+id;

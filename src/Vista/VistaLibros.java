@@ -25,7 +25,7 @@ public class VistaLibros extends javax.swing.JFrame {
     public VistaLibros() {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setTitle("Base de Datos V 0.0.1");
+        this.setTitle("Base de Datos V 0.2");
         //this.setExtendedState(MAXIMIZED_BOTH);
         this.setResizable(false);
         cargarDatosTabla();
@@ -66,6 +66,8 @@ public class VistaLibros extends javax.swing.JFrame {
         ColeccionText = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         IDLibro = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        ISBNtf = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -215,6 +217,15 @@ public class VistaLibros extends javax.swing.JFrame {
 
         IDLibro.setBackground(new java.awt.Color(255, 255, 255));
 
+        jLabel3.setText("ISBN:");
+
+        ISBNtf.setBackground(new java.awt.Color(255, 255, 255));
+        ISBNtf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ISBNtfActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -225,36 +236,34 @@ public class VistaLibros extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
                 .addGap(50, 50, 50)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(ColeccionText, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(EditButton, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(DeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
                             .addComponent(jLabel1)
                             .addComponent(jLabel12)
-                            .addComponent(jLabel10))
-                        .addGap(18, 18, 18)
+                            .addComponent(jLabel10)
+                            .addComponent(jLabel3))
+                        .addGap(25, 25, 25)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
                             .addComponent(AutorText)
                             .addComponent(NombreLibrotext, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(IDLibro)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addGap(23, 23, 23)
-                                .addComponent(ColeccionText))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(30, 30, 30)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(EditButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(33, 33, 33)
-                                        .addComponent(DeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(25, 25, 25))
+                            .addComponent(IDLibro)
+                            .addComponent(ISBNtf))))
+                .addGap(0, 25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -282,14 +291,18 @@ public class VistaLibros extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(67, 67, 67)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(ISBNtf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addGap(41, 41, 41)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(addButton)
                             .addComponent(EditButton)
                             .addComponent(DeleteButton))
                         .addGap(18, 18, 18)
                         .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addGap(22, 22, 22)))
@@ -325,6 +338,7 @@ public class VistaLibros extends javax.swing.JFrame {
     public void cargarDatosTabla(){
         //cargar los datos de la BBDD a la tabla con el jar rs2xml.jar
         try{
+            //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
             con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
             st = con.createStatement();
             rs = st.executeQuery("select * from AD.LIBROS");
@@ -339,14 +353,16 @@ public class VistaLibros extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Introduzca el ID del libro que desea añadir.");
         }else{
             try{
+                //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
                 con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
-                PreparedStatement add = con.prepareStatement("insert into AD.LIBROS values(?,?,?,?,?)");
+                PreparedStatement add = con.prepareStatement("insert into AD.LIBROS values(?,?,?,?,?,?)");
 
                 add.setInt(1, Integer.valueOf(IDLibro.getText()));
                 add.setString(2, NombreLibrotext.getText());
                 add.setString(3, AutorText.getText());
                 add.setString(4, SinopsisText.getText());
-                add.setString(5, ColeccionText.getText());      
+                add.setString(5, ColeccionText.getText());  
+                add.setString(6, ISBNtf.getText());
                 int row = add.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Se ha añadido correctamente el libro.");
                 con.close();
@@ -364,6 +380,7 @@ public class VistaLibros extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Introduzca el ID del libro que desea borrar.");
         }else{
             try{
+                //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
                 con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
                 String id = IDLibro.getText();
                 String Query = "delete from AD.LIBROS where LIBROSID="+id;
@@ -384,8 +401,22 @@ public class VistaLibros extends javax.swing.JFrame {
         IDLibro.setText(modelo.getValueAt(ind, 0).toString());
         NombreLibrotext.setText(modelo.getValueAt(ind, 1).toString());
         AutorText.setText(modelo.getValueAt(ind, 2).toString());
-        SinopsisText.setText(modelo.getValueAt(ind, 3).toString());
-        ColeccionText.setText(modelo.getValueAt(ind, 4).toString());
+        if(modelo.getValueAt(ind, 3).toString().isEmpty()){
+            SinopsisText.setText("");
+        }else{
+           SinopsisText.setText(modelo.getValueAt(ind, 3).toString());
+        }
+        
+        if(modelo.getValueAt(ind, 4).toString().isEmpty()){
+            ColeccionText.setText("");
+        }else{
+            ColeccionText.setText(modelo.getValueAt(ind, 4).toString());
+        } 
+        if(modelo.getValueAt(ind, 5).toString().isEmpty()){
+            ISBNtf.setText("");
+        }else{
+            ISBNtf.setText(modelo.getValueAt(ind, 5).toString());
+        }  
     }//GEN-LAST:event_TablaLibrosAreaMouseClicked
 
     private void EditButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditButtonMouseClicked
@@ -394,6 +425,7 @@ public class VistaLibros extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Introduzca el ID del libro, el nombre de este y el autor que desea editar.");
         }else{
             try{
+                //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
                 con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
                 String updateQuery = "update AD.LIBROS set NOMBRE='"+NombreLibrotext.getText()+"',AUTOR='"+AutorText.getText()+"'";
                 if(!SinopsisText.getText().isEmpty()){
@@ -402,7 +434,9 @@ public class VistaLibros extends javax.swing.JFrame {
                 if(!ColeccionText.getText().isEmpty()){
                     updateQuery += ",COLECCION='"+ColeccionText.getText()+"'";
                 }
-               
+                if(!ISBNtf.getText().isEmpty()){
+                    updateQuery += ",ISBN='"+ISBNtf.getText()+"'";
+                }
                 updateQuery += " where LIBROSID="+IDLibro.getText();
                 Statement add = con.createStatement();
                 add.executeUpdate(updateQuery);
@@ -413,6 +447,10 @@ public class VistaLibros extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_EditButtonMouseClicked
+
+    private void ISBNtfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ISBNtfActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ISBNtfActionPerformed
 
     /**
      * @param args the command line arguments
@@ -455,6 +493,7 @@ public class VistaLibros extends javax.swing.JFrame {
     private javax.swing.JButton DeleteButton;
     private javax.swing.JButton EditButton;
     private javax.swing.JTextField IDLibro;
+    private javax.swing.JTextField ISBNtf;
     private javax.swing.JTextField NombreLibrotext;
     private javax.swing.JTextArea SinopsisText;
     private javax.swing.JTable TablaLibrosArea;
@@ -465,6 +504,7 @@ public class VistaLibros extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;

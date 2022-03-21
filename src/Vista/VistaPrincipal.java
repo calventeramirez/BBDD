@@ -16,7 +16,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
     public VistaPrincipal() {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setTitle("Base de Datos V 0.0.1");
+        this.setTitle("Base de Datos V 0.2");
         //this.setExtendedState(MAXIMIZED_BOTH);
         this.setResizable(false);
     }
