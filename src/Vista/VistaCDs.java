@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
@@ -26,7 +27,8 @@ public class VistaCDs extends javax.swing.JFrame {
     public VistaCDs() {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setTitle("Base de Datos V 0.2");
+        this.setTitle("Base de Datos V0.3.1");
+        setIconImage(new ImageIcon(getClass().getResource("/img/iconoapp.png")).getImage());
         //this.setExtendedState(MAXIMIZED_BOTH);
         this.setResizable(false);
         cargarDatosTabla();
@@ -42,7 +44,13 @@ public class VistaCDs extends javax.swing.JFrame {
             con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
             st = con.createStatement();
             rs = st.executeQuery("select * from AD.CDS");
-            TablaCDsArea.setModel(DbUtils.resultSetToTableModel(rs));
+            //TablaCDsArea.setModel(DbUtils.resultSetToTableModel(rs));
+            DefaultTableModel dfm = new DefaultTableModel();
+            TablaCDsArea.setModel(dfm);
+            dfm.setColumnIdentifiers((new Object[]{"ID", "NOMBRE", "CANTANTE", "NUMERO DE CDS"}));
+            while(rs.next()){
+                dfm.addRow(new Object[]{rs.getInt("ID"), rs.getString("NOMBRE"), rs.getString("CANTANTE"), rs.getInt("NUMCDS")});
+            }
             con.close();
         }catch(SQLException e){
             e.printStackTrace();
@@ -81,6 +89,7 @@ public class VistaCDs extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
+        TablaCDsArea.setAutoCreateRowSorter(true);
         TablaCDsArea.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -97,6 +106,7 @@ public class VistaCDs extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        TablaCDsArea.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         TablaCDsArea.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         TablaCDsArea.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -147,9 +157,9 @@ public class VistaCDs extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel7)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(895, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -251,12 +261,12 @@ public class VistaCDs extends javax.swing.JFrame {
                             .addComponent(NumCdsbox, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(AddButton, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(53, 53, 53)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(EditButton, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
-                        .addComponent(DeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(EditButton, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(DeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(17, 17, 17)))
                 .addContainerGap())
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -289,11 +299,11 @@ public class VistaCDs extends javax.swing.JFrame {
                             .addComponent(AddButton)
                             .addComponent(EditButton)
                             .addComponent(DeleteButton))
-                        .addGap(36, 36, 36)
+                        .addGap(30, 30, 30)
                         .addComponent(jButton2))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         EditButton.getAccessibleContext().setAccessibleName("jbBuscar");
@@ -368,7 +378,7 @@ public class VistaCDs extends javax.swing.JFrame {
                 //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
                 con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
                 String updateQuery = "update AD.CDS set NOMBRE='"+NombreCDText.getText()+"',CANTANTE='"+CantanteText.getText()+"',NUMCDS="+NumCdsbox.getSelectedItem(); 
-                updateQuery += " where CDID="+CDjb.getText();
+                updateQuery += " where ID="+CDjb.getText();
                 java.sql.Statement add = con.createStatement();
                 add.executeUpdate(updateQuery);
                 JOptionPane.showMessageDialog(this, "Actualización del CD ha sido llevada a cabo.");
