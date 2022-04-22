@@ -4,13 +4,25 @@
  */
 package Vista;
 
+import java.awt.Color;
+import java.awt.Image;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Blob;
 import java.sql.Connection;
-import java.sql.Statement;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.*;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import net.proteanit.sql.DbUtils;
-import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,20 +34,62 @@ public class VistaLibros extends javax.swing.JFrame {
     /**
      * Creates new form VistaLibros
      */
+    int xMouse,
+
+    /**
+     * Creates new form VistaLibros
+     */
+    yMouse;
+    Connection con = null;
+    Statement st = null;
+    ResultSet rs = null;
+    File foto = null;
+    String indice;
+
+    public void cargarDatosTabla() {
+        //cargar los datos de la BBDD a la tabla con el jar rs2xml.jar
+        try {
+            //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database2", "administrador", "administrador");
+            con = DriverManager.getConnection("jdbc:derby:.\\database","administrador","administrador");
+            st = con.createStatement();
+            rs = st.executeQuery("select * from ADMINISTRADOR.LIBROS");
+            //TablaLibrosArea.setModel(DbUtils.resultSetToTableModel(rs));
+            DefaultTableModel dfm = new DefaultTableModel();
+            TablaLibros.setModel(dfm);
+            dfm.setColumnIdentifiers((new Object[]{"NOMBRE", "AUTOR", "COLECCION", "ISBN"}));
+            while (rs.next()) {
+                dfm.addRow(new Object[]{rs.getString("NOMBRE"), rs.getString("AUTOR"), rs.getString("COLECCION"), rs.getString("ISBN")});
+            }
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String IDLibro(String nom) {
+        String id = "-1";
+        try {
+            st = con.createStatement();
+            rs = st.executeQuery("select ID from ADMINISTRADOR.LIBROS WHERE NOMBRE = '" + nom + "'");
+            while (rs.next()) {
+                id = Integer.toString(rs.getInt("ID"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
     public VistaLibros() {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setTitle("Base de Datos V0.3.1");
+        this.setTitle("Base de Datos V1.0");
         setIconImage(new ImageIcon(getClass().getResource("/img/iconoapp.png")).getImage());
         //this.setExtendedState(MAXIMIZED_BOTH);
         this.setResizable(false);
         cargarDatosTabla();
     }
-    Connection con = null;
-    Statement st = null;
-    ResultSet rs = null;
-    //private int id = 1;
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -45,442 +99,740 @@ public class VistaLibros extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        TablaLibrosArea = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
-        addButton = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        EditButton = new javax.swing.JButton();
-        DeleteButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        NombreLibrotext = new javax.swing.JTextField();
+        Panel_Principal = new javax.swing.JPanel();
+        Panel_Superior = new javax.swing.JPanel();
+        Panel_Sup2 = new javax.swing.JPanel();
+        Panel_X = new javax.swing.JPanel();
+        XLabel = new javax.swing.JLabel();
+        BBDDLabel = new javax.swing.JLabel();
+        Panel_Inferior = new javax.swing.JPanel();
+        CopyLabel = new javax.swing.JLabel();
+        ScrollTabla = new javax.swing.JScrollPane();
+        TablaLibros = new javax.swing.JTable();
+        BotonesyDemasPanel = new javax.swing.JPanel();
+        NombreLabel = new javax.swing.JLabel();
+        NombreText = new javax.swing.JTextField();
+        NombreSeparador = new javax.swing.JSeparator();
+        AutorLabel = new javax.swing.JLabel();
         AutorText = new javax.swing.JTextField();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        AutorSeparador = new javax.swing.JSeparator();
+        SagaLabel = new javax.swing.JLabel();
+        SagaText = new javax.swing.JTextField();
+        SagaSeparador = new javax.swing.JSeparator();
+        ISBNLabel = new javax.swing.JLabel();
+        ISBNText = new javax.swing.JTextField();
+        ISBNSeparador = new javax.swing.JSeparator();
+        SinopsisLabel = new javax.swing.JLabel();
+        ScrollSinopsis = new javax.swing.JScrollPane();
         SinopsisText = new javax.swing.JTextArea();
-        ColeccionText = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
-        IDLibro = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        ISBNtf = new javax.swing.JTextField();
+        Panel_Imagen = new javax.swing.JPanel();
+        PortadaLabel = new javax.swing.JLabel();
+        LinkText = new javax.swing.JLabel();
+        LinkSeparador = new javax.swing.JSeparator();
+        CaratulaLabel = new javax.swing.JLabel();
+        Cargar_ImagenBoton = new javax.swing.JButton();
+        Panel_Boton = new javax.swing.JPanel();
+        Boton_Anadir = new javax.swing.JButton();
+        Boton_Editar = new javax.swing.JButton();
+        Boton_Borrar = new javax.swing.JButton();
+        Boton_Inicio = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(255, 255, 255));
+        setUndecorated(true);
 
-        TablaLibrosArea.setBackground(new java.awt.Color(255, 255, 255));
-        TablaLibrosArea.setForeground(new java.awt.Color(0, 0, 0));
-        TablaLibrosArea.setModel(new javax.swing.table.DefaultTableModel(
+        Panel_Principal.setBackground(new java.awt.Color(204, 204, 204));
+
+        Panel_Superior.setBackground(new java.awt.Color(255, 0, 0));
+
+        Panel_Sup2.setBackground(new java.awt.Color(153, 153, 153));
+        Panel_Sup2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                Panel_Sup2MouseDragged(evt);
+            }
+        });
+        Panel_Sup2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                Panel_Sup2MousePressed(evt);
+            }
+        });
+
+        Panel_X.setBackground(new java.awt.Color(153, 153, 153));
+
+        XLabel.setBackground(new java.awt.Color(204, 204, 204));
+        XLabel.setFont(new java.awt.Font("Roboto", 0, 36)); // NOI18N
+        XLabel.setForeground(new java.awt.Color(0, 0, 0));
+        XLabel.setText("X");
+        XLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                XLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                XLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                XLabelMouseExited(evt);
+            }
+        });
+
+        javax.swing.GroupLayout Panel_XLayout = new javax.swing.GroupLayout(Panel_X);
+        Panel_X.setLayout(Panel_XLayout);
+        Panel_XLayout.setHorizontalGroup(
+            Panel_XLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel_XLayout.createSequentialGroup()
+                .addContainerGap(14, Short.MAX_VALUE)
+                .addComponent(XLabel)
+                .addContainerGap())
+        );
+        Panel_XLayout.setVerticalGroup(
+            Panel_XLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_XLayout.createSequentialGroup()
+                .addComponent(XLabel)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout Panel_Sup2Layout = new javax.swing.GroupLayout(Panel_Sup2);
+        Panel_Sup2.setLayout(Panel_Sup2Layout);
+        Panel_Sup2Layout.setHorizontalGroup(
+            Panel_Sup2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel_Sup2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(Panel_X, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        Panel_Sup2Layout.setVerticalGroup(
+            Panel_Sup2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(Panel_X, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        BBDDLabel.setBackground(new java.awt.Color(255, 0, 0));
+        BBDDLabel.setFont(new java.awt.Font("Roboto", 0, 36)); // NOI18N
+        BBDDLabel.setForeground(new java.awt.Color(255, 255, 255));
+        BBDDLabel.setText("BASE DE DATOS");
+
+        javax.swing.GroupLayout Panel_SuperiorLayout = new javax.swing.GroupLayout(Panel_Superior);
+        Panel_Superior.setLayout(Panel_SuperiorLayout);
+        Panel_SuperiorLayout.setHorizontalGroup(
+            Panel_SuperiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel_SuperiorLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(BBDDLabel)
+                .addGap(537, 537, 537))
+            .addComponent(Panel_Sup2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        Panel_SuperiorLayout.setVerticalGroup(
+            Panel_SuperiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_SuperiorLayout.createSequentialGroup()
+                .addComponent(Panel_Sup2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(BBDDLabel)
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+
+        Panel_Inferior.setBackground(new java.awt.Color(255, 0, 0));
+
+        CopyLabel.setBackground(new java.awt.Color(255, 0, 0));
+        CopyLabel.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        CopyLabel.setForeground(new java.awt.Color(255, 255, 255));
+        CopyLabel.setText("© Pablo Jesús Calvente Ramírez");
+
+        javax.swing.GroupLayout Panel_InferiorLayout = new javax.swing.GroupLayout(Panel_Inferior);
+        Panel_Inferior.setLayout(Panel_InferiorLayout);
+        Panel_InferiorLayout.setHorizontalGroup(
+            Panel_InferiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_InferiorLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(CopyLabel)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        Panel_InferiorLayout.setVerticalGroup(
+            Panel_InferiorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_InferiorLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(CopyLabel)
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        ScrollTabla.setBackground(new java.awt.Color(204, 204, 204));
+        ScrollTabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ScrollTablaMouseClicked(evt);
+            }
+        });
+
+        TablaLibros.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        TablaLibros.setForeground(new java.awt.Color(0, 0, 0));
+        TablaLibros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Nombre Libro", "Autor", "Sinopsis", "Saga/Colección", "ISBN"
+                "Nombre", "Autor", "Saga"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
-        TablaLibrosArea.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-        TablaLibrosArea.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        TablaLibrosArea.addMouseListener(new java.awt.event.MouseAdapter() {
+        TablaLibros.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                TablaLibrosAreaMouseClicked(evt);
+                TablaLibrosMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(TablaLibrosArea);
+        ScrollTabla.setViewportView(TablaLibros);
 
-        jButton2.setText("Inicio");
-        jButton2.setActionCommand("jbInicio");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
+        BotonesyDemasPanel.setBackground(new java.awt.Color(204, 204, 204));
 
-        addButton.setText("Añadir Libro");
-        addButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                addButtonMouseClicked(evt);
-            }
-        });
-        addButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addButtonActionPerformed(evt);
-            }
-        });
+        NombreLabel.setBackground(new java.awt.Color(204, 204, 204));
+        NombreLabel.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        NombreLabel.setForeground(new java.awt.Color(0, 0, 0));
+        NombreLabel.setText("Nombre:");
 
-        jPanel2.setBackground(new java.awt.Color(255, 0, 0));
+        NombreText.setBackground(new java.awt.Color(204, 204, 204));
+        NombreText.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        NombreText.setForeground(new java.awt.Color(0, 0, 0));
+        NombreText.setBorder(null);
 
-        jLabel2.setBackground(new java.awt.Color(255, 0, 51));
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 48)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Base de Datos");
+        AutorLabel.setBackground(new java.awt.Color(204, 204, 204));
+        AutorLabel.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        AutorLabel.setForeground(new java.awt.Color(0, 0, 0));
+        AutorLabel.setText("Autor:");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(321, 321, 321))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(26, 26, 26))
-        );
+        AutorText.setBackground(new java.awt.Color(204, 204, 204));
+        AutorText.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        AutorText.setForeground(new java.awt.Color(0, 0, 0));
+        AutorText.setBorder(null);
 
-        jPanel4.setBackground(new java.awt.Color(255, 0, 0));
+        SagaLabel.setBackground(new java.awt.Color(204, 204, 204));
+        SagaLabel.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        SagaLabel.setForeground(new java.awt.Color(0, 0, 0));
+        SagaLabel.setText("Saga/Colección:");
 
-        jLabel8.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("© Pablo Jesús Calvente Ramírez");
+        SagaText.setBackground(new java.awt.Color(204, 204, 204));
+        SagaText.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        SagaText.setForeground(new java.awt.Color(0, 0, 0));
+        SagaText.setBorder(null);
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel7))
-                .addContainerGap())
-        );
+        ISBNLabel.setBackground(new java.awt.Color(204, 204, 204));
+        ISBNLabel.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        ISBNLabel.setForeground(new java.awt.Color(0, 0, 0));
+        ISBNLabel.setText("ISBN:");
 
-        EditButton.setText("Editar");
-        EditButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                EditButtonMouseClicked(evt);
-            }
-        });
-        EditButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EditButtonActionPerformed(evt);
-            }
-        });
+        ISBNText.setBackground(new java.awt.Color(204, 204, 204));
+        ISBNText.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        ISBNText.setForeground(new java.awt.Color(0, 0, 0));
+        ISBNText.setBorder(null);
 
-        DeleteButton.setText("Borrar");
-        DeleteButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                DeleteButtonMouseClicked(evt);
-            }
-        });
-
-        jLabel1.setText("Nombre del libro: ");
-
-        jLabel9.setText("Autor: ");
-
-        jLabel10.setText("Sinopsis: ");
-
-        jLabel11.setText("Saga/Colección: ");
-
-        NombreLibrotext.setBackground(new java.awt.Color(255, 255, 255));
-        NombreLibrotext.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NombreLibrotextActionPerformed(evt);
-            }
-        });
-
-        AutorText.setBackground(new java.awt.Color(255, 255, 255));
+        SinopsisLabel.setBackground(new java.awt.Color(204, 204, 204));
+        SinopsisLabel.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        SinopsisLabel.setForeground(new java.awt.Color(0, 0, 0));
+        SinopsisLabel.setText("Sinopsis:");
 
         SinopsisText.setBackground(new java.awt.Color(255, 255, 255));
         SinopsisText.setColumns(20);
-        SinopsisText.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        SinopsisText.setLineWrap(true);
+        SinopsisText.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        SinopsisText.setForeground(new java.awt.Color(0, 0, 0));
         SinopsisText.setRows(5);
-        SinopsisText.setWrapStyleWord(true);
-        jScrollPane2.setViewportView(SinopsisText);
+        ScrollSinopsis.setViewportView(SinopsisText);
 
-        ColeccionText.setBackground(new java.awt.Color(255, 255, 255));
+        Panel_Imagen.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel12.setText("ID Libro: ");
+        PortadaLabel.setBackground(new java.awt.Color(204, 204, 204));
+        PortadaLabel.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        PortadaLabel.setForeground(new java.awt.Color(0, 0, 0));
+        PortadaLabel.setText("Portada:");
 
-        IDLibro.setBackground(new java.awt.Color(255, 255, 255));
+        LinkText.setBackground(new java.awt.Color(204, 204, 204));
+        LinkText.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        LinkText.setForeground(new java.awt.Color(0, 0, 0));
+        LinkText.setEnabled(false);
 
-        jLabel3.setText("ISBN:");
+        CaratulaLabel.setBackground(new java.awt.Color(204, 204, 204));
+        CaratulaLabel.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        CaratulaLabel.setForeground(new java.awt.Color(0, 0, 0));
+        CaratulaLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        ISBNtf.setBackground(new java.awt.Color(255, 255, 255));
-        ISBNtf.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ISBNtfActionPerformed(evt);
+        Cargar_ImagenBoton.setBackground(new java.awt.Color(255, 255, 255));
+        Cargar_ImagenBoton.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        Cargar_ImagenBoton.setForeground(new java.awt.Color(0, 0, 0));
+        Cargar_ImagenBoton.setText("Cargar Imagen");
+        Cargar_ImagenBoton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        Cargar_ImagenBoton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Cargar_ImagenBoton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Cargar_ImagenBotonMouseClicked(evt);
             }
         });
+        Cargar_ImagenBoton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Cargar_ImagenBotonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout Panel_ImagenLayout = new javax.swing.GroupLayout(Panel_Imagen);
+        Panel_Imagen.setLayout(Panel_ImagenLayout);
+        Panel_ImagenLayout.setHorizontalGroup(
+            Panel_ImagenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_ImagenLayout.createSequentialGroup()
+                .addComponent(PortadaLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(Panel_ImagenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(LinkSeparador)
+                    .addComponent(LinkText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(Panel_ImagenLayout.createSequentialGroup()
+                        .addGap(140, 140, 140)
+                        .addGroup(Panel_ImagenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(CaratulaLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(Cargar_ImagenBoton, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        Panel_ImagenLayout.setVerticalGroup(
+            Panel_ImagenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_ImagenLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(Panel_ImagenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(PortadaLabel)
+                    .addComponent(LinkText))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(LinkSeparador, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(CaratulaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Cargar_ImagenBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+
+        Panel_Boton.setBackground(new java.awt.Color(204, 204, 204));
+
+        Boton_Anadir.setBackground(new java.awt.Color(255, 255, 255));
+        Boton_Anadir.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        Boton_Anadir.setForeground(new java.awt.Color(0, 0, 0));
+        Boton_Anadir.setText("Añadir");
+        Boton_Anadir.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        Boton_Anadir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Boton_AnadirMouseClicked(evt);
+            }
+        });
+
+        Boton_Editar.setBackground(new java.awt.Color(255, 255, 255));
+        Boton_Editar.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        Boton_Editar.setForeground(new java.awt.Color(0, 0, 0));
+        Boton_Editar.setText("Editar");
+        Boton_Editar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        Boton_Editar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Boton_EditarMouseClicked(evt);
+            }
+        });
+
+        Boton_Borrar.setBackground(new java.awt.Color(255, 255, 255));
+        Boton_Borrar.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        Boton_Borrar.setForeground(new java.awt.Color(0, 0, 0));
+        Boton_Borrar.setText("Borrar");
+        Boton_Borrar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        Boton_Borrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Boton_BorrarMouseClicked(evt);
+            }
+        });
+
+        Boton_Inicio.setBackground(new java.awt.Color(255, 255, 255));
+        Boton_Inicio.setForeground(new java.awt.Color(0, 0, 0));
+        Boton_Inicio.setText("Inicio");
+        Boton_Inicio.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        Boton_Inicio.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Boton_InicioMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout Panel_BotonLayout = new javax.swing.GroupLayout(Panel_Boton);
+        Panel_Boton.setLayout(Panel_BotonLayout);
+        Panel_BotonLayout.setHorizontalGroup(
+            Panel_BotonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel_BotonLayout.createSequentialGroup()
+                .addContainerGap(78, Short.MAX_VALUE)
+                .addComponent(Boton_Anadir, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(Panel_BotonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(Boton_Inicio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Boton_Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(Boton_Borrar, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(46, 46, 46))
+        );
+        Panel_BotonLayout.setVerticalGroup(
+            Panel_BotonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_BotonLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(Panel_BotonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Boton_Anadir, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Boton_Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Boton_Borrar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(Boton_Inicio, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout BotonesyDemasPanelLayout = new javax.swing.GroupLayout(BotonesyDemasPanel);
+        BotonesyDemasPanel.setLayout(BotonesyDemasPanelLayout);
+        BotonesyDemasPanelLayout.setHorizontalGroup(
+            BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(BotonesyDemasPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Panel_Imagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(BotonesyDemasPanelLayout.createSequentialGroup()
+                        .addGroup(BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(BotonesyDemasPanelLayout.createSequentialGroup()
+                                .addGroup(BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(NombreLabel)
+                                    .addComponent(AutorLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(NombreSeparador)
+                                    .addComponent(NombreText)
+                                    .addComponent(AutorText, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(AutorSeparador, javax.swing.GroupLayout.Alignment.TRAILING)))
+                            .addGroup(BotonesyDemasPanelLayout.createSequentialGroup()
+                                .addComponent(SagaLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(SagaSeparador)
+                                    .addComponent(SagaText)))
+                            .addGroup(BotonesyDemasPanelLayout.createSequentialGroup()
+                                .addComponent(ISBNLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ISBNSeparador)
+                                    .addComponent(ISBNText)))
+                            .addGroup(BotonesyDemasPanelLayout.createSequentialGroup()
+                                .addComponent(SinopsisLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ScrollSinopsis)))
+                        .addContainerGap())
+                    .addComponent(Panel_Boton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        BotonesyDemasPanelLayout.setVerticalGroup(
+            BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(BotonesyDemasPanelLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(NombreText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(NombreLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(NombreSeparador, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(AutorLabel)
+                    .addComponent(AutorText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(AutorSeparador, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SagaLabel)
+                    .addComponent(SagaText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(SagaSeparador, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ISBNLabel)
+                    .addComponent(ISBNText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ISBNSeparador, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(BotonesyDemasPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(SinopsisLabel)
+                    .addComponent(ScrollSinopsis, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Panel_Imagen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Panel_Boton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(12, 12, 12))
+        );
+
+        javax.swing.GroupLayout Panel_PrincipalLayout = new javax.swing.GroupLayout(Panel_Principal);
+        Panel_Principal.setLayout(Panel_PrincipalLayout);
+        Panel_PrincipalLayout.setHorizontalGroup(
+            Panel_PrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(Panel_Superior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(Panel_Inferior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(Panel_PrincipalLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(ScrollTabla, javax.swing.GroupLayout.PREFERRED_SIZE, 824, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(BotonesyDemasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(12, 12, 12))
+        );
+        Panel_PrincipalLayout.setVerticalGroup(
+            Panel_PrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_PrincipalLayout.createSequentialGroup()
+                .addComponent(Panel_Superior, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(Panel_PrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ScrollTabla)
+                    .addComponent(BotonesyDemasPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Panel_Inferior, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)
-                .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(ColeccionText, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(EditButton, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(DeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabel3))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(25, 25, 25)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
-                                    .addComponent(AutorText)
-                                    .addComponent(NombreLibrotext, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(IDLibro)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(ISBNtf, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(25, 25, 25))
+            .addComponent(Panel_Principal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel12)
-                            .addComponent(IDLibro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(NombreLibrotext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel9)
-                            .addComponent(AutorText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(2, 2, 2)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ColeccionText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(ISBNtf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(addButton)
-                            .addComponent(EditButton)
-                            .addComponent(DeleteButton))
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addGap(20, 20, 20)))
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(Panel_Principal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
-        jButton2.getAccessibleContext().setAccessibleName("jbInicio");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void XLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XLabelMouseClicked
+        // TODO add your handling code here:
+        System.exit(0);
+
+    }//GEN-LAST:event_XLabelMouseClicked
+
+    private void XLabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XLabelMouseEntered
+        // TODO add your handling code here:
+        Panel_X.setBackground(Color.RED);
+        XLabel.setForeground(Color.WHITE);
+    }//GEN-LAST:event_XLabelMouseEntered
+
+    private void XLabelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_XLabelMouseExited
+        // TODO add your handling code here:
+        Panel_X.setBackground(Color.GRAY);
+        XLabel.setForeground(Color.BLACK);
+    }//GEN-LAST:event_XLabelMouseExited
+
+    private void Panel_Sup2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Panel_Sup2MouseDragged
+        // TODO add your handling code here:
+        int x = evt.getXOnScreen();
+        int y = evt.getYOnScreen();
+        this.setLocation(x - xMouse, y - yMouse);
+    }//GEN-LAST:event_Panel_Sup2MouseDragged
+
+    private void Panel_Sup2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Panel_Sup2MousePressed
+        // TODO add your handling code here:
+        xMouse = evt.getX();
+        yMouse = evt.getY();
+    }//GEN-LAST:event_Panel_Sup2MousePressed
+
+    private void ScrollTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ScrollTablaMouseClicked
+        // TODO add your handling code here:
+        DefaultTableModel modelo = (DefaultTableModel) TablaLibros.getModel();
+        int ind = TablaLibros.getSelectedRow();
+
+        NombreText.setText(modelo.getValueAt(ind, 0).toString());
+        AutorText.setText(modelo.getValueAt(ind, 1).toString());
+        if (modelo.getValueAt(ind, 2).toString().isEmpty()) {
+            SagaText.setText("");
+        } else {
+            SagaText.setText(modelo.getValueAt(ind, 2).toString());
+        }
+        if (modelo.getValueAt(ind, 3).toString().isEmpty()) {
+            ISBNText.setText("");
+        } else {
+            ISBNText.setText(modelo.getValueAt(ind, 3).toString());
+        }
+        try {
+            String nombre = NombreText.getText();
+            //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database2", "administrador", "administrador");
+            con = DriverManager.getConnection("jdbc:derby:.\\database","administrador","administrador");
+            st = con.createStatement();
+            indice = IDLibro(nombre);
+            System.out.print(indice);
+            rs = st.executeQuery("SELECT SINOPSIS, IMAGEN FROM ADMINISTRADOR.LIBROS where ID =" + indice);
+            byte[] image = null;
+            //while (rs.next()) {
+            if (rs.getString("SINOPSIS").isEmpty()) {
+                SinopsisText.setText("");
+            } else {
+                SinopsisText.setText(rs.getString("SINOPSIS"));
+            }
+            //if(rs.getBlob("PORTADA").toString().isEmpty()){
+            //aqui tengo que dejar vacio el cuadro
+            // }else{
+            //aqui tengo que cargar el blob
+            //}
+            //ImagenLabel.setIcon(new ImageIcon(getClass().getResource("/img/iconodefault.png")) );
+            Blob blob = rs.getBlob("IMAGEN");
+            Image img2 = javax.imageio.ImageIO.read(blob.getBinaryStream());
+            image = blob.getBytes(1, (int) blob.length());
+            ImageIcon imagen = new ImageIcon(img2);
+            ImageIcon fotoEscalada = new ImageIcon(imagen.getImage().getScaledInstance(CaratulaLabel.getWidth(), CaratulaLabel.getHeight(), Image.SCALE_DEFAULT));
+            CaratulaLabel.setIcon(fotoEscalada);
+            LinkText.setText("");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            Logger.getLogger(VistaLibros.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_ScrollTablaMouseClicked
+
+    private void Cargar_ImagenBotonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Cargar_ImagenBotonMouseClicked
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_Cargar_ImagenBotonMouseClicked
+
+    private void Cargar_ImagenBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Cargar_ImagenBotonActionPerformed
+        // TODO add your handling code here:
+        JFileChooser filechooser = new JFileChooser();
+        filechooser.setMultiSelectionEnabled(true);
+        filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("*.jpg", "jpg");
+        filechooser.setFileFilter(filtro);
+        FileNameExtensionFilter filtro2 = new FileNameExtensionFilter("*.png", "png");
+        filechooser.setFileFilter(filtro2);
+        int select = filechooser.showOpenDialog(Panel_Superior);
+        if (select == JFileChooser.APPROVE_OPTION) {
+            foto = filechooser.getSelectedFile();
+            LinkText.setText(foto.getAbsolutePath());
+            ImageIcon original = new ImageIcon(foto.getAbsolutePath());
+            Image img = original.getImage();
+            Image escalada = img.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
+            ImageIcon fotoEscalada = new ImageIcon(escalada);
+            CaratulaLabel.setIcon(fotoEscalada);
+        }
+    }//GEN-LAST:event_Cargar_ImagenBotonActionPerformed
+
+    private void Boton_AnadirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_AnadirMouseClicked
+        // TODO add your handling code here:
+        try {
+            //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database2", "administrador", "administrador");
+            con = DriverManager.getConnection("jdbc:derby:.\\database","administrador","administrador");
+            PreparedStatement add = con.prepareStatement("insert into ADMINISTRADOR.LIBROS (NOMBRE, AUTOR, SINOPSIS, COLECCION, IMAGEN, ISBN) values(?,?,?,?,?,?)");
+
+            add.setString(1, NombreText.getText());
+            add.setString(2, AutorText.getText());
+            add.setString(3, SinopsisText.getText());
+            add.setString(4, SagaText.getText());
+            add.setString(6, ISBNText.getText());
+
+            FileInputStream fi = new FileInputStream(foto);
+            add.setBlob(5, fi, foto.length());
+
+            int row = add.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Se ha añadido correctamente el libro.");
+            con.close();
+            cargarDatosTabla();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(VistaLibros.class.getName()).log(Level.SEVERE, null, ex);
+            //JOptionPane.showMessageDialog(this, "Error añade foto");
+        }
+    }//GEN-LAST:event_Boton_AnadirMouseClicked
+
+    private void TablaLibrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaLibrosMouseClicked
+        // TODO add your handling code here:
+        DefaultTableModel modelo = (DefaultTableModel) TablaLibros.getModel();
+        int ind = TablaLibros.getSelectedRow();
+
+        NombreText.setText(modelo.getValueAt(ind, 0).toString());
+        AutorText.setText(modelo.getValueAt(ind, 1).toString());
+        if (modelo.getValueAt(ind, 2).toString().isEmpty()) {
+            SagaText.setText("");
+        } else {
+            SagaText.setText(modelo.getValueAt(ind, 2).toString());
+        }
+        if (modelo.getValueAt(ind, 3).toString().isEmpty()) {
+            ISBNText.setText("");
+        } else {
+            ISBNText.setText(modelo.getValueAt(ind, 3).toString());
+        }
+        try {
+            String nombre = NombreText.getText();
+            //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database2", "administrador", "administrador");
+            con = DriverManager.getConnection("jdbc:derby:.\\database","administrador","administrador");
+            st = con.createStatement();
+            indice = IDLibro(nombre);
+            rs = st.executeQuery("SELECT SINOPSIS, IMAGEN FROM ADMINISTRADOR.LIBROS where ID = " + indice);
+            byte[] image = null;
+            while (rs.next()) {
+                if (rs.getString("SINOPSIS").isEmpty()) {
+                    SinopsisText.setText("");
+                } else {
+                    SinopsisText.setText(rs.getString("SINOPSIS"));
+                }
+
+                Blob blob = rs.getBlob("IMAGEN");
+                Image img2 = javax.imageio.ImageIO.read(blob.getBinaryStream());
+                image = blob.getBytes(1, (int) blob.length());
+                ImageIcon imagen = new ImageIcon(img2);
+                ImageIcon fotoEscalada = new ImageIcon(imagen.getImage().getScaledInstance(CaratulaLabel.getWidth(), CaratulaLabel.getHeight(), Image.SCALE_DEFAULT));
+                CaratulaLabel.setIcon(fotoEscalada);
+                LinkText.setText("");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException ex) {
+            Logger.getLogger(VistaLibros.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_TablaLibrosMouseClicked
+
+    private void Boton_BorrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_BorrarMouseClicked
+        // TODO add your handling code here:
+        try {
+            //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database2", "administrador", "administrador");
+            con = DriverManager.getConnection("jdbc:derby:.\\database","administrador","administrador");
+
+            String Query = "delete from ADMINISTRADOR.LIBROS where ID=" + indice;
+            Statement add = con.createStatement();
+            add.executeUpdate(Query);
+            cargarDatosTabla();
+            con.close();
+            JOptionPane.showMessageDialog(this, "Libro Borrado");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_Boton_BorrarMouseClicked
+
+    private void Boton_InicioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_InicioMouseClicked
         // TODO add your handling code here:
         VistaPrincipal a = new VistaPrincipal();
         a.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_Boton_InicioMouseClicked
 
-    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
+    private void Boton_EditarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_EditarMouseClicked
         // TODO add your handling code here:
-       /* VistaAnadirLibro a = new VistaAnadirLibro();
-        a.setVisible(true);
-        this.setVisible(false);*/
-    }//GEN-LAST:event_addButtonActionPerformed
-
-    private void EditButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_EditButtonActionPerformed
-
-    private void NombreLibrotextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NombreLibrotextActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_NombreLibrotextActionPerformed
-    public void cargarDatosTabla(){
-        //cargar los datos de la BBDD a la tabla con el jar rs2xml.jar
-        try{
-            //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
-            con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
-            st = con.createStatement();
-            rs = st.executeQuery("select * from AD.LIBROS");
-            //TablaLibrosArea.setModel(DbUtils.resultSetToTableModel(rs));
-            DefaultTableModel dfm = new DefaultTableModel();
-            TablaLibrosArea.setModel(dfm);
-            dfm.setColumnIdentifiers((new Object[]{"ID", "NOMBRE", "AUTOR", "COLECCION", "ISBN"}));
-            while(rs.next()){
-                dfm.addRow(new Object[]{rs.getInt("ID"), rs.getString("NOMBRE"), rs.getString("AUTOR"), rs.getString("COLECCION"), rs.getString("ISBN")});   
+        try {
+            con = DriverManager.getConnection("jdbc:derby://localhost:1527/database2", "administrador", "administrador");
+            //con = DriverManager.getConnection("jdbc:derby:.\\database","administrador","administrador");
+            String updateQuery = "update ADMINISTRADOR.LIBROS set NOMBRE='" + NombreText.getText() + "',AUTOR='" + AutorText.getText() + "'";
+            if (!SinopsisText.getText().isEmpty()) {
+                updateQuery += ",SINOPSIS='" + SinopsisText.getText() + "'";
             }
-        }catch(SQLException e){
+            if (!SagaText.getText().isEmpty()) {
+                updateQuery += ",COLECCION='" + SagaText.getText() + "'";
+            }
+            if (!ISBNText.getText().isEmpty()) {
+                updateQuery += ",ISBN='" + ISBNText.getText() + "'";
+            }
+            updateQuery += " where ID=" + indice;
+            Statement add = con.createStatement();
+            add.executeUpdate(updateQuery);
+            JOptionPane.showMessageDialog(this, "Actualización del libro ha sido llevada a cabo.");
+            cargarDatosTabla();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-    private void addButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addButtonMouseClicked
-        // Boton de añadir a la base de datos
-        if(IDLibro.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Introduzca el ID del libro que desea añadir.");
-        }else{
-            try{
-                //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
-                con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
-                PreparedStatement add = con.prepareStatement("insert into AD.LIBROS values(?,?,?,?,?,?)");
-
-                add.setInt(1, Integer.valueOf(IDLibro.getText()));
-                add.setString(2, NombreLibrotext.getText());
-                add.setString(3, AutorText.getText());
-                add.setString(4, SinopsisText.getText());
-                add.setString(5, ColeccionText.getText());  
-                add.setString(6, ISBNtf.getText());
-                int row = add.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Se ha añadido correctamente el libro.");
-                con.close();
-                cargarDatosTabla();
-            }catch(SQLException e){
-                e.printStackTrace();
-            }
-        }
-    }//GEN-LAST:event_addButtonMouseClicked
-
-    private void DeleteButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DeleteButtonMouseClicked
-        // Borra el libro de la base de datos 
-        // CUIDADO NECESARIO ID PARA BORRAR LIBRO
-        if(IDLibro.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Introduzca el ID del libro que desea borrar.");
-        }else{
-            try{
-                //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
-                con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
-                String id = IDLibro.getText();
-                String Query = "delete from AD.LIBROS where LIBROSID="+id;
-                Statement add = con.createStatement();
-                add.executeUpdate(Query);
-                cargarDatosTabla();
-                JOptionPane.showMessageDialog(this, "Libro Borrado");
-            }catch(SQLException e){
-                e.printStackTrace();
-            }
-        }
-    }//GEN-LAST:event_DeleteButtonMouseClicked
-
-    private void TablaLibrosAreaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaLibrosAreaMouseClicked
-        // Selecciona un elemento de la lista para colocar sus datos en los huecos.
-        DefaultTableModel modelo = (DefaultTableModel)TablaLibrosArea.getModel();
-        int ind = TablaLibrosArea.getSelectedRow();
-        IDLibro.setText(modelo.getValueAt(ind, 0).toString());
-        NombreLibrotext.setText(modelo.getValueAt(ind, 1).toString());
-        AutorText.setText(modelo.getValueAt(ind, 2).toString());
-        /*if(modelo.getValueAt(ind, 5).toString().isEmpty()){
-            SinopsisText.setText("");
-        }else{
-           SinopsisText.setText(modelo.getValueAt(ind, 5).toString());
-        }*/
-        
-        if(modelo.getValueAt(ind, 3).toString().isEmpty()){
-            ColeccionText.setText("");
-        }else{
-            ColeccionText.setText(modelo.getValueAt(ind, 3).toString());
-        } 
-        if(modelo.getValueAt(ind, 4).toString().isEmpty()){
-            ISBNtf.setText("");
-        }else{
-            ISBNtf.setText(modelo.getValueAt(ind, 4).toString());
-        }  
-        try{
-             //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
-            con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
-            st = con.createStatement();
-            rs = st.executeQuery("select SINOPSIS from AD.LIBROS");
-            while(rs.next()){
-                if(rs.getString("SINOPSIS").isEmpty()){
-                    SinopsisText.setText("");
-                }else{
-                    SinopsisText.setText(rs.getString("SINOPSIS"));
-                }
-            }
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-    }//GEN-LAST:event_TablaLibrosAreaMouseClicked
-
-    private void EditButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditButtonMouseClicked
-        // TODO add your handling code here:
-        if(IDLibro.getText().isEmpty()||NombreLibrotext.getText().isEmpty()||AutorText.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Introduzca el ID del libro, el nombre de este y el autor que desea editar.");
-        }else{
-            try{
-                //con = DriverManager.getConnection("jdbc:derby://localhost:1527/database","ad","ad");
-                con = DriverManager.getConnection("jdbc:derby:.\\database","ad","ad");
-                String updateQuery = "update AD.LIBROS set NOMBRE='"+NombreLibrotext.getText()+"',AUTOR='"+AutorText.getText()+"'";
-                if(!SinopsisText.getText().isEmpty()){
-                    updateQuery += ",SINOPSIS='"+SinopsisText.getText()+"'";
-                }
-                if(!ColeccionText.getText().isEmpty()){
-                    updateQuery += ",COLECCION='"+ColeccionText.getText()+"'";
-                }
-                if(!ISBNtf.getText().isEmpty()){
-                    updateQuery += ",ISBN='"+ISBNtf.getText()+"'";
-                }
-                updateQuery += " where ID="+IDLibro.getText();
-                Statement add = con.createStatement();
-                add.executeUpdate(updateQuery);
-                JOptionPane.showMessageDialog(this, "Actualización del libro ha sido llevada a cabo.");
-                cargarDatosTabla();
-            }catch(SQLException e){
-                e.printStackTrace();
-            }
-        }
-    }//GEN-LAST:event_EditButtonMouseClicked
-
-    private void ISBNtfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ISBNtfActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ISBNtfActionPerformed
+    }//GEN-LAST:event_Boton_EditarMouseClicked
 
     /**
      * @param args the command line arguments
@@ -508,6 +860,7 @@ public class VistaLibros extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(VistaLibros.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -518,29 +871,42 @@ public class VistaLibros extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel AutorLabel;
+    private javax.swing.JSeparator AutorSeparador;
     private javax.swing.JTextField AutorText;
-    private javax.swing.JTextField ColeccionText;
-    private javax.swing.JButton DeleteButton;
-    private javax.swing.JButton EditButton;
-    private javax.swing.JTextField IDLibro;
-    private javax.swing.JTextField ISBNtf;
-    private javax.swing.JTextField NombreLibrotext;
+    private javax.swing.JLabel BBDDLabel;
+    private javax.swing.JButton Boton_Anadir;
+    private javax.swing.JButton Boton_Borrar;
+    private javax.swing.JButton Boton_Editar;
+    private javax.swing.JButton Boton_Inicio;
+    private javax.swing.JPanel BotonesyDemasPanel;
+    private javax.swing.JLabel CaratulaLabel;
+    private javax.swing.JButton Cargar_ImagenBoton;
+    private javax.swing.JLabel CopyLabel;
+    private javax.swing.JLabel ISBNLabel;
+    private javax.swing.JSeparator ISBNSeparador;
+    private javax.swing.JTextField ISBNText;
+    private javax.swing.JSeparator LinkSeparador;
+    private javax.swing.JLabel LinkText;
+    private javax.swing.JLabel NombreLabel;
+    private javax.swing.JSeparator NombreSeparador;
+    private javax.swing.JTextField NombreText;
+    private javax.swing.JPanel Panel_Boton;
+    private javax.swing.JPanel Panel_Imagen;
+    private javax.swing.JPanel Panel_Inferior;
+    private javax.swing.JPanel Panel_Principal;
+    private javax.swing.JPanel Panel_Sup2;
+    private javax.swing.JPanel Panel_Superior;
+    private javax.swing.JPanel Panel_X;
+    private javax.swing.JLabel PortadaLabel;
+    private javax.swing.JLabel SagaLabel;
+    private javax.swing.JSeparator SagaSeparador;
+    private javax.swing.JTextField SagaText;
+    private javax.swing.JScrollPane ScrollSinopsis;
+    private javax.swing.JScrollPane ScrollTabla;
+    private javax.swing.JLabel SinopsisLabel;
     private javax.swing.JTextArea SinopsisText;
-    private javax.swing.JTable TablaLibrosArea;
-    private javax.swing.JButton addButton;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable TablaLibros;
+    private javax.swing.JLabel XLabel;
     // End of variables declaration//GEN-END:variables
 }
